@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<grammar version="1.0" xml:lang="en-IN" root="topLevel"
+		 tag-format="semantics/1.0"
+ xmlns="http://www.w3.org/2001/06/grammar">
+
+  <rule id="topLevel">
+    <ruleref uri="#playCommands" />
+    <ruleref uri="#pauseCommands" />
+    <ruleref uri="#stopCommands" />
+  </rule>
+
+  <rule id="playCommands">
+    <ruleref uri="#playAction" />
+    <item> the </item>
+    <ruleref uri="#fileWords" />
+  </rule>
+
+  <rule id="playAction">
+    <one-of>
+      <item> play </item>
+      <item> start </item>
+      <item> begin </item>
+    </one-of>
+  </rule>
+
+  <rule id="pauseCommands">
+    <ruleref uri="#pauseAction" />
+    <item> the </item>
+    <ruleref uri="#fileWords" />
+  </rule>
+
+  <rule id="pauseAction">
+    <one-of>
+      <item> pause </item>
+      <item> suspend </item>
+      <item> hold </item>
+    </one-of>
+  </rule>
+
+<rule id="stopCommands">
+    <ruleref uri="#stopAction" />
+    <item> the </item>
+    <ruleref uri="#fileWords" />
+  </rule>
+
+  <rule id="stopAction">
+    <one-of>
+      <item> stop </item>
+      <item> end </item>
+      <item> quit </item>
+    </one-of>
+  </rule>
+
+  <rule id="fileWords">
+    <one-of>
+      <item> song </item>
+      <item> tune </item>
+      <item> track </item>
+      <item> item </item>
+    </one-of>
+  </rule>
+
+</grammar>
+

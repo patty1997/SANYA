@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+	<CommandSet xml:lang="en-in" Name="SecurityCommandSet_en-in">
+		<CommandPrefix>Sanya</CommandPrefix>
+		<Example> Sanya </Example>
+
+		<Command Name="LaunchApp">
+			<Example>activate</Example>
+			<ListenFor>activate security</ListenFor>
+			<Feedback>Activating Security Protocols</Feedback>
+			<Navigate />
+		</Command>
+
+		<Command Name="UserProfile">
+			<Example>Add new user</Example>
+			<ListenFor>Add new user</ListenFor>
+			<Feedback>Okay! , please stand in front of the camera to register yourself!</Feedback>
+			<Navigate />
+		</Command>
+		
+		<Command Name="LightBulb">
+			<Example>Swtich on lights</Example>
+			<ListenFor>Switch on lights</ListenFor>
+			<Feedback>Okay, Light on!</Feedback>
+			<Navigate />
+		</Command>
+	</CommandSet>
+</VoiceCommands>
