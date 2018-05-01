@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<grammar xml:lang="en-US" 
+         root="yesOrNo"
+         version="1.0" 
+         tag-format="semantics/1.0"
+         xmlns="http://www.w3.org/2001/06/grammar">
+
+    <!-- The following rules recognize variants of yes and no. -->
+      <rule id="yesOrNo">
+         <one-of>
+            <item>
+              <one-of>
+                 <item>yes</item>
+                 <item>yeah</item>
+                 <item>yep</item>
+                 <item>yup</item>
+                 <item>un huh</item>
+                 <item>yay yus</item>
+              </one-of>
+              <tag>out="yes";</tag>
+            </item>
+            <item>
+              <one-of>
+                 <item>no</item>
+                 <item>nope</item>
+                 <item>nah</item>
+                 <item>uh uh</item>
+               </one-of>
+               <tag>out="no";</tag>
+            </item>
+         </one-of>
+      </rule>
+</grammar>

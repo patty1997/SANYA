@@ -36,7 +36,8 @@ namespace FacialRecognitionDoor
         public const string NoCameraMessage = "Sorry! It seems like your camera has not been fully initialized.";
 
         public const string newUsermessage = "Okay! Please stand infront of the camera so that I can register you. ";
-
+        public const string Introduction = "Hello! My name is SANYA. I am a home automation personal assistant and a security manager. As we all know, a lot of people suffer some form of disablity. Some are visually impared while other are physically handicapped. I was designed, keeping in mind the, the daily problems a human faces in his day to day chores . Currently, I am at the very primitive stage and hence my actions are limited. But in future, I might be able to do all the work that an assistant should do.";
+        public const string Creators = "My Creators are Sajjad, Prateek, Aayush and Utkarsh";
         public static string GeneralGreetigMessage(string visitorName)
         {
             return "Welcome " + visitorName + "! I will open the door for you.";
@@ -66,7 +67,7 @@ namespace FacialRecognitionDoor
         {
             
             Random random = new Random();
-            string[] SanyaWelcomeMessage = { "HELLO! How are you?", "Haaye, How may I help you?", "Hey","Howdy", "Hey yaa" };
+            string[] SanyaWelcomeMessage = { "HELLO! How are you?", "Haaye, How may I help you?", "Hey" ,"Howdy", "Hey yaa" };
             string a = SanyaWelcomeMessage[random.Next(0,3)];
             return a; 
         }

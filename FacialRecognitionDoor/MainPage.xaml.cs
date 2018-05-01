@@ -462,7 +462,7 @@ namespace FacialRecognitionDoor
             // Create an instance of SpeechRecognizer.
             speechRecognizer = new SpeechRecognizer();
             //set of responses
-            string[] responses = { "sanya", "hey sanya", "hi sanya", "what's up sanya"};
+            string[] responses = {"hey sanya", "what's up sanya"};
 
             //list constraint to the recognizer
             var listConstraint = new SpeechRecognitionListConstraint(responses, "AssitantName");
@@ -470,14 +470,9 @@ namespace FacialRecognitionDoor
             speechRecognizer.Constraints.Add(listConstraint);
 
             // Compile the dictation topic constraint, which optimizes for dictated speech.
-            //var dictationConstraint = new SpeechRecognitionTopicConstraint(SpeechRecognitionScenario.Dictation, "dictation");
-            //speechRecognizer.Constraints.Add(dictationConstraint);
             SpeechRecognitionCompilationResult compilationResult = await speechRecognizer.CompileConstraintsAsync();
 
-            // RecognizeWithUIAsync allows developers to customize the prompts.    
-            //speechRecognizer.UIOptions.AudiblePrompt = "Dictate a phrase or sentence...";
-            //speechRecognizer.UIOptions.ExampleText = speechResourceMap.GetValue("DictationUIOptionsExampleText", speechContext).ValueAsString;
-
+           
             // Check to make sure that the constraints were in a proper format and the recognizer was able to compile it.
             if (compilationResult.Status != SpeechRecognitionResultStatus.Success)
             {

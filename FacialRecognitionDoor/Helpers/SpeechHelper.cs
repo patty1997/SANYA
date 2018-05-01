@@ -40,6 +40,20 @@ namespace FacialRecognitionDoor.Helpers
             }
         }
 
+        public async Task ReadSsml(string text)
+        {
+            if (mediaElement != null && synthesizer != null)
+            {
+                synthesizer.Voice = SpeechSynthesizer.AllVoices.First(i => (i.Gender == VoiceGender.Female && i.Description.Contains("United States")));
+                string Ssml= @"<?xml version='1.0' encoding='ISO - 8859 - 1'?>< speak version = '1.0' xmlns = 'http://www.w3.org/2001/10/synthesis'xml: lang = 'en-US' >< s ><prosody pitch = '+1st' rate='-10%' volume='90'>" + text+"</prosody></ s ></ speak > ";
+                SpeechSynthesisStream stream = await synthesizer.SynthesizeSsmlToStreamAsync(Ssml);
+                mediaElement.AutoPlay = true;
+                mediaElement.SetSource(stream, stream.ContentType);
+                mediaElement.Play();
+            }
+        }
+
+
         /// <summary>
         /// Disposes of IDisposable type SpeechSynthesizer
         /// </summary>

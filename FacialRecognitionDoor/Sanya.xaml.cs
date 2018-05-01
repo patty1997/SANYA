@@ -10,6 +10,7 @@ using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
+using Windows.Media.SpeechSynthesis;
 using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -45,6 +46,8 @@ namespace FacialRecognitionDoor
         {
             this.InitializeComponent();
         }
+
+
 
         private async void speechMediaElement_Loaded(object sender, RoutedEventArgs e)
         {
@@ -82,81 +85,7 @@ namespace FacialRecognitionDoor
             }
         }
 
-        private async Task InitializeSpeechRecognizer()
-        {
-            if (speechRecognizer != null)
-            {
-                //speechRecognizer.ContinuousRecognitionSession.Completed -= ContinuousRecognitionSession_Completed;
-                //speechRecognizer.ContinuousRecognitionSession.ResultGenerated -= ContinuousRecognitionSession_ResultGenerated;
-                speechRecognizer.StateChanged -= SpeechRecognizer_StateChanged;
-                this.speechRecognizer.Dispose();
-                this.speechRecognizer = null;
-            }
-
-            try
-            {            //Create an instance of speech recognizer
-                speechRecognizer = new SpeechRecognizer();
-
-                speechRecognizer.StateChanged += SpeechRecognizer_StateChanged;
-
-                //Add grammar file constraint to the recognizer.
-                // string fileName = "SRGS.xml";
-                //StorageFile grammarContentFile = await Package.Current.InstalledLocation.GetFileAsync(fileName);
-                //SpeechRecognitionGrammarFileConstraint grammarFileConstraint = new SpeechRecognitionGrammarFileConstraint(grammarContentFile);
-                var storageFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///SRGSmusic.xml"));
-                var grammarfileConstraint = new Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint(storageFile, "music");
-
-                speechRecognizer.Constraints.Add(grammarfileConstraint);
-                resultTextBlock.Text = "Example play, pause";
-
-                SpeechRecognitionCompilationResult compilationResult = await speechRecognizer.CompileConstraintsAsync();
-                resultTextBlock.Text = "Yahan tak to aa hi gye";
-                if (compilationResult.Status != SpeechRecognitionResultStatus.Success)
-                {
-                    // Disable the recognition button.
-                    btnContinuousRecognize.IsEnabled = false;
-
-                    // Let the user know that the grammar didn't compile properly.
-                    resultTextBlock.Text = "Unable to compile grammar.";
-                }
-                else
-                {
-
-                    resultTextBlock.Text = "Compilation Successful!";
-                    // Set EndSilenceTimeout to give users more time to complete speaking a phrase.
-                    speechRecognizer.Timeouts.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
-
-                    // Handle continuous recognition events. Completed fires when various error states occur. ResultGenerated fires when
-                    // some recognized phrases occur, or the garbage rule is hit.
-                    //speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
-                    //speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
-
-
-                    btnContinuousRecognize.IsEnabled = true;
-
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                if ((uint)ex.HResult == HResultRecognizerNotFound)
-                {
-                    btnContinuousRecognize.IsEnabled = false;
-
-                    resultTextBlock.Visibility = Visibility.Visible;
-                    resultTextBlock.Text = "Speech Language pack for selected language not installed.";
-                }
-                else
-                {
-                    var messageDialog = new Windows.UI.Popups.MessageDialog(ex.Message, "Exception");
-                    await messageDialog.ShowAsync();
-                }
-            }
-
-        }
-    
-
-        private async void ContinuousRecognitionSession_Completed(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)
+        private async void ContinuousRecognitionSession_Completed(SpeechContinuousRecognitionSession sender,    SpeechContinuousRecognitionCompletedEventArgs args)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -243,110 +172,204 @@ namespace FacialRecognitionDoor
                 btnContinuousRecognize.IsEnabled = false;
             }
 
-            
+          //  SpeechRecognitionResult speechRecognitionResult = await speechRecognizer.RecognizeAsync();
+           // HandleRecognitionResult(speechRecognitionResult);
+
+
+        }
+
+        private async Task InitializeSpeechRecognizer()
+        {
+           /* if (speechRecognizer != null)
+            {
+                speechRecognizer.StateChanged -= SpeechRecognizer_StateChanged;
+                this.speechRecognizer.Dispose();
+                this.speechRecognizer = null;
+            }
+            */
+            try
+            {   //Create an instance of speech recognizer
+                speechRecognizer = new SpeechRecognizer();
+
+                //speechRecognizer.StateChanged += SpeechRecognizer_StateChanged;
+
+                //Add grammar file constraint to the recognizer.
+                //  var storageFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///SRGSmusic.grxml"));
+                //  var grammarfileConstraint = new Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint(storageFile, "music");
+                string[] responses = { "Play the song", "Introduce yourself", "Who are your creators", "Which day is it","What is the temperature" };
+                var listConstraint = new SpeechRecognitionListConstraint(responses, "Action");
+                //speechRecognizer.Constraints.Add(grammarfileConstraint);
+                //resultTextBlock.Text = "Example play, pause";
+                speechRecognizer.Constraints.Add(listConstraint);
+                SpeechRecognitionCompilationResult compilationResult = await speechRecognizer.CompileConstraintsAsync();
+                resultTextBlock.Text = "Yahan tak to aa hi gye";
+                if (compilationResult.Status != SpeechRecognitionResultStatus.Success)
+                {
+                    // Disable the recognition button.
+                    btnContinuousRecognize.IsEnabled = false;
+
+                    // Let the user know that the grammar didn't compile properly.
+                    resultTextBlock.Text = "Unable to compile grammar.";
+                }
+                else
+                {
+
+                    resultTextBlock.Text = "Compilation Successful!";
+                    // Set EndSilenceTimeout to give users more time to complete speaking a phrase.
+                    //speechRecognizer.Timeouts.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
+
+                    btnContinuousRecognize.IsEnabled = true;
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                if ((uint)ex.HResult == HResultRecognizerNotFound)
+                {
+                    btnContinuousRecognize.IsEnabled = false;
+
+                    resultTextBlock.Visibility = Visibility.Visible;
+                    resultTextBlock.Text = "Speech Language pack for selected language not installed.";
+                }
+                else
+                {
+                    var messageDialog = new Windows.UI.Popups.MessageDialog(ex.Message, "Exception");
+                    await messageDialog.ShowAsync();
+                }
+            }
+
         }
 
         public async void ContinuousRecognize_Click(object sender, RoutedEventArgs e)
         {
             btnContinuousRecognize.IsEnabled = false;
-            // The recognizer can only start listening in a continuous fashion if the recognizer is currently idle.
-            // This prevents an exception from occurring.
-            if (speechRecognizer.State == SpeechRecognizerState.Idle)
+            try
             {
-                // Reset the text to prompt the user.
-                try
-                {
-                    
-                    speechRecognitionResult= await speechRecognizer.RecognizeAsync();
-                    //HandleRecognitionResult(speechRecognitionResult);
-                    if (speechRecognitionResult.Status == SpeechRecognitionResultStatus.Success)
-                    {
-                        if (speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Rejected /*|| speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Rejected*/)
-                        {
-                            await speech.Read("Sorry! I didn't get that! Can you repeat again?");
-                            if (speechRecognizer.State == SpeechRecognizerState.SoundEnded)
-                            {
-                                speechRecognitionResult = await speechRecognizer.RecognizeWithUIAsync();
-                                HandleRecognitionResult(speechRecognitionResult);
-                            }
-                        }
-                        else
-                        {
-                            await speech.Read("All right! Next song comming up!");
-                            resultTextBlock.Text = "Playing the song...";
-
-
-                        }
-                    }
-
-                }
-                catch (Exception exception)
-                {
-                    var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "StartAsync Exception");
-                    await messageDialog.ShowAsync();
-                }
-            }
-            else
-            {
-                try
+                SpeechRecognitionResult speechRecognitionResult = await speechRecognizer.RecognizeAsync();
+                HandleRecognitionResult(speechRecognitionResult);
+                // The recognizer can only start listening in a continuous fashion if the recognizer is currently idle.
+                // This prevents an exception from occurring.
+                /*if (speechRecognizer.State == SpeechRecognizerState.Idle)
                 {
                     // Reset the text to prompt the user.
-                    // Cancelling recognition prevents any currently recognized speech from
-                    // generating a ResultGenerated event. StopAsync() will allow the final session to 
-                    // complete.
-                    //await speechRecognizer.ContinuousRecognitionSession.CancelAsync();
-                }
-                catch (Exception ex)
-                {
-                    var messageDialog = new Windows.UI.Popups.MessageDialog(ex.Message, "CancelAsync Exception");
-                    await messageDialog.ShowAsync();
-                }
-            }
-            btnContinuousRecognize.IsEnabled = true;
-        }
-        //private async void ContinuousRecognitionSession_ResultGenerated()
-        /*private async void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
-        {
-            // Developers may decide to use per-phrase confidence levels in order to tune the behavior of their 
-            // grammar based on testing.
-            if (args.Result.Confidence == SpeechRecognitionConfidence.Medium ||
-                args.Result.Confidence == SpeechRecognitionConfidence.High)
-            {
-                //await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                //{
-                    HandleRecognitionResult();
-                //});
-            }
-            // Prompt the user if recognition failed or recognition confidence is low.
-            else if (args.Result.Confidence == SpeechRecognitionConfidence.Rejected ||
-            args.Result.Confidence == SpeechRecognitionConfidence.Low)
-            {
-                // In some scenarios, a developer may choose to ignore giving the user feedback in this case, if speech
-                // is not the primary input mechanism for the application.
-                //await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                //{
-                    resultTextBlock.Text = "Sorry! I didn't understand that";
-                //});
-            }
-        }*/
-
-        private async void HandleRecognitionResult(SpeechRecognitionResult speechRecognitionResult)
-        {
-            if (speechRecognitionResult.Status == SpeechRecognitionResultStatus.Success)
-            {
-                if (speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Rejected /*|| speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Rejected*/)
-                {
-                    await speech.Read("Sorry! I didn't get that! Can you repeat again?");
-                    if (speechRecognizer.State == SpeechRecognizerState.SoundEnded)
+                    try
                     {
-                        speechRecognitionResult = await speechRecognizer.RecognizeWithUIAsync();
-                        HandleRecognitionResult(speechRecognitionResult);
+                        recognitionOperation = speechRecognizer.RecognizeAsync();
+                        speechRecognitionResult = await recognitionOperation;
+                        //HandleRecognitionResult(speechRecognitionResult);
+                        if (speechRecognitionResult.Status == SpeechRecognitionResultStatus.Success)
+                        {
+                            if (speechRecognitionResult.Confidence == SpeechRecognitionConfidence.High || speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Rejected)
+                            {
+                                await speech.Read("Sorry! I didn't get that! Can you repeat again?");
+                                if (speechRecognizer.State == SpeechRecognizerState.SoundEnded)
+                                {
+                                    speechRecognitionResult = await speechRecognizer.RecognizeWithUIAsync();
+                                    HandleRecognitionResult(speechRecognitionResult);
+                                }
+                            }
+                            else
+                            {
+                                await speech.Read("All right! Next song comming up!");
+                                resultTextBlock.Text = "Playing the song...";
+
+
+                            }
+                        }
+
+                    }
+                    catch (Exception exception)
+                    {
+                        var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "StartAsync Exception");
+                        await messageDialog.ShowAsync();
                     }
                 }
                 else
                 {
-                    await speech.Read("All right! Next song comming up!");
-                    resultTextBlock.Text = "Playing the song...";
+                    try
+                    {
+                        // Reset the text to prompt the user.
+                        // Cancelling recognition prevents any currently recognized speech from
+                        // generating a ResultGenerated event. StopAsync() will allow the final session to 
+                        // complete.
+                        //await speechRecognizer.ContinuousRecognitionSession.CancelAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        var messageDialog = new Windows.UI.Popups.MessageDialog(ex.Message, "CancelAsync Exception");
+                        await messageDialog.ShowAsync();
+                    }
+                }*/
+                btnContinuousRecognize.IsEnabled = true;
+            }
+            catch (TaskCanceledException exception)
+            {
+                // TaskCanceledException will be thrown if you exit the scenario while the recognizer is actively
+                // processing speech. Since this happens here when we navigate out of the scenario, don't try to 
+                // show a message dialog for this exception.
+                System.Diagnostics.Debug.WriteLine("TaskCanceledException caught while recognition in progress (can be ignored):");
+                System.Diagnostics.Debug.WriteLine(exception.ToString());
+            }
+            catch (Exception exception)
+            {
+                // Handle the speech privacy policy error.
+               
+                    var messageDialog = new Windows.UI.Popups.MessageDialog(exception.Message, "Exception");
+                    await messageDialog.ShowAsync();
+                
+            }
+
+        }        
+
+        private async void repeat()
+        {
+            SpeechRecognitionResult speechRecognitionResult = await speechRecognizer.RecognizeAsync();
+            HandleRecognitionResult(speechRecognitionResult);
+        }
+
+        private void HandleRecognitionResult(SpeechRecognitionResult speechRecognitionResult)
+        {
+            if (speechRecognitionResult.Status == SpeechRecognitionResultStatus.Success)
+            {
+                if (speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Low|| speechRecognitionResult.Confidence == SpeechRecognitionConfidence.Rejected)
+                {
+                    speech.Read("Sorry! I did not understand that! Can you repeat again?");
+
+                    //this.repeat();
+                }
+                else
+                {
+                    switch (speechRecognitionResult.Text)
+                    {
+                        case "Play the song":
+                            speech.Read("All right! Next song comming up!");
+                            resultTextBlock.Text = "Playing the song...";
+                            break;
+
+                        case "Introduce yourself":
+                            speech.Read(SpeechContants.Introduction);
+                            Frame.Navigate(typeof(MainPage));
+                            break;
+
+                        case "Who are your creators":
+                            speech.Read(SpeechContants.Creators);
+                            Frame.Navigate(typeof(MainPage));
+                            break;
+
+                        case "Which day is it":
+                            DateTime thisDay = DateTime.Today;
+                            speech.Read(thisDay.ToString("D"));
+                            resultTextBlock.Text = thisDay.ToString("D");
+                            break;
+
+
+                        default:
+                            speech.Read("I have limited functioning capabilities as of now.");
+                            Frame.Navigate(typeof(MainPage));
+                            break;
+                    }
+
 
 
                 }

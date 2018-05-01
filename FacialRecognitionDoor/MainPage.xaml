@@ -55,7 +55,7 @@
             </GridView>
             <ProgressRing x:Name="OxfordLoadingRing" Grid.Column="0" IsActive="True" Width="113" Height="80" Grid.RowSpan="2" Foreground="White"/>
         </Grid>
-        <TextBlock x:Name="WelcomeBlock" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Welcome to the Security Door!" VerticalAlignment="Center" Grid.ColumnSpan="3" FontSize="53.333" Margin="50,0,50,100"/>
+        <TextBlock x:Name="WelcomeBlock" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="S.A.N.Y.A" VerticalAlignment="Center" Grid.ColumnSpan="3" FontSize="53.333" Margin="50,0,50,100"/>
         <TextBlock x:Name="DetailsBlock" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Press the + icon to add a authentic user and get started! When you're ready, hit the doorbell icon to try and unlock the door with your face!" VerticalAlignment="Center" Grid.ColumnSpan="3" FontSize="33.333" Margin="50,80,50,0" TextAlignment="Center"/>
         <TextBlock x:Name="heardYouSayTextBlock" Margin="0,14.5,0,0" Text="Heard you say" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}"/>
         <TextBlock x:Name="hlOpenPrivacySettings" Visibility="Collapsed" TextWrapping="WrapWholeWords">The speech recognition privacy settings have not been accepted. <Hyperlink Click="openPrivacySettings_Click">Open Privacy Settings</Hyperlink> to review the privacy policy and enable personalization.</TextBlock>

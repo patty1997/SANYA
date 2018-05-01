@@ -114,7 +114,7 @@ namespace FacialRecognitionDoor.Helpers
             // Captures and stores new Jpeg image file
             await mediaCapture.CapturePhotoToStorageFileAsync(ImageEncodingProperties.CreateJpeg(), file);
 
-            // Return image file
+            // Return image file.
             return file;
         }
 
